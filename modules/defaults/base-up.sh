@@ -114,10 +114,10 @@ function create_start_mysql() {
         chown 1000:1000 /tmp/swdc-tool-cache
         while !(nc -z mysql 3306)
         do
-          echo -n '.'
+          #echo -n '.'
           sleep 1
         done;
-        echo 'database ready!'
+        #echo 'database ready!'
       "
     depends_on:
       - mysql
