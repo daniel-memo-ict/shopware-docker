@@ -56,6 +56,9 @@ function create_nginx() {
           if [[ -e "${d}/php.ini" ]]; then
             echo "      - ${d}/php.ini:/usr/local/etc/php/conf.d/swdc-custom.ini" >>"${DOCKER_COMPOSE_FILE}"
           fi
+          if [[ -e "${d}/nginx.conf" ]]; then
+            echo "      - ${d}/nginx.conf:/etc/nginx/sites-enabled/00-custom.conf" >>"${DOCKER_COMPOSE_FILE}"
+          fi
 
           echo "      - ${CODE_DIRECTORY}:/var/www/html" >>"${DOCKER_COMPOSE_FILE}"
       fi
