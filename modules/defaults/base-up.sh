@@ -166,6 +166,8 @@ function create_es() {
   {
     echo "  elastic:"
     echo "    image: ${ELASTICSEARCH_IMAGE}"
+    echo "    ports:"
+    echo "      - 9200:9200"
     echo "    environment:"
     echo "      VIRTUAL_HOST: es.${DEFAULT_SERVICES_DOMAIN}"
     echo "      VIRTUAL_PORT: 9200"
