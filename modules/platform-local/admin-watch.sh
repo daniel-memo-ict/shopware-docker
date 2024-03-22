@@ -19,8 +19,9 @@ fi
 
 if [[ -e "${LOCAL_WEBPACK_CONFIG}" ]]; then
     disabledHostCheck=$(grep disableHostCheck < "${LOCAL_WEBPACK_CONFIG}")
-    
-    if [[ -n "$disabledHostCheck" ]]; then
+    allowedHosts=$(grep 'allowedHosts: "all"' < "${LOCAL_WEBPACK_CONFIG}")
+
+    if [[ -n "$disabledHostCheck" || -n "$allowedHosts" ]]; then
         "$0" console "${SHOPWARE_PROJECT}" bundle:dump
         "$0" console "${SHOPWARE_PROJECT}" feature:dump || true
 
