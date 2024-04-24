@@ -26,9 +26,7 @@ export XDEBUG_ENABLE=$2
 if [[ -n $XDEBUG_ENABLE ]]; then
   shift
 fi
-
 {
-  echo "version: '3.7'"
   echo "services:"
 
   echo "  smtp:"
