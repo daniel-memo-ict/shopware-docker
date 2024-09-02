@@ -87,6 +87,11 @@ fi
   echo "    driver: local"
   echo "  tool_cache:"
   echo "    driver: local"
+
+  if [[ ${ENABLE_REDIS} == "true" ]]; then
+    echo "  redis_cache:"
+    echo "    driver: local"
+  fi
 } >>"${DOCKER_COMPOSE_FILE}"
 
 compose run --rm start_mysql

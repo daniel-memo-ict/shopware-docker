@@ -206,6 +206,8 @@ function create_redis() {
   {
     echo "  redis:"
     echo "    image: redis:5-alpine"
+    echo "    volumes:"
+    echo "      - redis_cache:/data"
   } >>"${DOCKER_COMPOSE_FILE}"
 }
 
