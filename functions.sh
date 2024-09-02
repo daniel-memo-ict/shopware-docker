@@ -64,9 +64,9 @@ function get_image() {
   if [[ -n $val ]]; then
     echo "$val"
   else
-    IMAGE="ghcr.io/shyim/shopware-docker/5/nginx"
-    if [[ -f "$2/public/index.php" ]]; then
-      IMAGE="ghcr.io/shyim/shopware-docker/6/nginx"
+    IMAGE="ghcr.io/shyim/shopware-docker/6/nginx"
+    if [[ -f "$2/shopware.php" ]]; then
+      IMAGE="ghcr.io/shyim/shopware-docker/5/nginx"
     fi
 
     echo "${IMAGE}:php${PHP_VERSION}${SUFFIX}"
