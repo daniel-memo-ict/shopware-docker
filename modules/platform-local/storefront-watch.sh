@@ -24,6 +24,8 @@ if [[ -e "${LOCAL_WEBPACK_CONFIG}" ]]; then
         "$0" console "${SHOPWARE_PROJECT}" feature:dump || true
         "$0" console "${SHOPWARE_PROJECT}" theme:dump || true
 
+        ASSET_PORT=$((7000 + RANDOM % 1000))
+
         echo "Starting watcher at host http://${WATCHER_URL}"
         docker run \
             -it \
@@ -31,6 +33,7 @@ if [[ -e "${LOCAL_WEBPACK_CONFIG}" ]]; then
             --name "${SHOPWARE_PROJECT}_storefront_watch" \
             --network shopware-docker_default \
             -v "$LOCAL_PROJECT_ROOT:/var/www/html/${SHOPWARE_PROJECT}" \
+            -p "${ASSET_PORT}:${ASSET_PORT}" \
             -e PORT=80 \
             -e HOST="0.0.0.0" \
             -e ESLINT_DISABLE=true \
@@ -38,6 +41,7 @@ if [[ -e "${LOCAL_WEBPACK_CONFIG}" ]]; then
             -e PROJECT_ROOT="/var/www/html/${SHOPWARE_PROJECT}" \
             -e ENV_FILE="/var/www/html/${SHOPWARE_PROJECT}/.env" \
             -e STOREFRONT_PROXY_PORT=80 \
+            -e STOREFRONT_ASSETS_PORT=${ASSET_PORT} \
             -e PROXY_URL="${WATCHER_SCHEME}://${WATCHER_URL}" \
             -e "VIRTUAL_HOST=$WATCHER_URL" \
             -w "/var/www/html/${SHOPWARE_PROJECT}" \
