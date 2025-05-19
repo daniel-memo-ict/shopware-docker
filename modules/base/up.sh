@@ -30,13 +30,13 @@ fi
   echo "services:"
 
   echo "  smtp:"
-  echo "    image: ghcr.io/shyim/shopware-docker/mailhog"
+  echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/mailhog"
   echo "    environment:"
   echo "      VIRTUAL_HOST: mail.${DEFAULT_SERVICES_DOMAIN}"
   echo "      VIRTUAL_PORT: 8025"
 
   echo "  proxy:"
-  echo "    image: ghcr.io/shyim/shopware-docker/proxy"
+  echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/proxy"
   echo "    volumes:"
   echo "      - /var/run/docker.sock:/tmp/docker.sock:ro"
   echo "      - ${HOME}/.config/swdc/ssl:/etc/nginx/certs"

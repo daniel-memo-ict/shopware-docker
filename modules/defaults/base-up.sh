@@ -138,7 +138,7 @@ function create_cli() {
     if [[ -e "$HOME/.config/swdc/cli/Dockerfile" ]]; then
       echo "    build: $HOME/.config/swdc/cli" >>"${DOCKER_COMPOSE_FILE}"
     else
-      echo "    image: ghcr.io/shyim/shopware-docker/cli:php${PHP_VERSION}${SUFFIX}"
+      echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/cli:php${PHP_VERSION}${SUFFIX}"
     fi
     echo "    env_file:"
     echo "      - ${REALDIR}/docker.env"
@@ -240,7 +240,7 @@ function create_database_tool() {
   else
     {
       echo "  adminer:"
-      echo "    image: ghcr.io/shyim/shopware-docker/adminer"
+      echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/adminer"
       echo "    env_file:"
       echo "      - ${REALDIR}/docker.env"
       echo "      - ${REALDIR}/adminer.env"
@@ -280,7 +280,7 @@ EOF
 function create_cypress() {
   {
     echo "  cypress-backup-proxy:"
-    echo "    image: ghcr.io/shyim/shopware-docker/cypress-backup-proxy:latest"
+    echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/cypress-backup-proxy:latest"
     echo "    env_file:"
     echo "      - ${REALDIR}/docker.env"
     echo "    volumes:"

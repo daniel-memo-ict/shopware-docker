@@ -35,6 +35,6 @@ else
       -v shopware-docker_tool_cache:/tmp/swdc-tool-cache \
       -v "$CODE_DIRECTORY:/var/www/html/" \
       -v "/.config/swdc/:/swdc-cfg" \
-      "ghcr.io/shyim/shopware-docker/cli:php$PHP_VERSION" "$@"
+      "ghcr.io/daniel-memo-ict/shopware-docker/cli:php$PHP_VERSION" "$@"
   fi
 fi

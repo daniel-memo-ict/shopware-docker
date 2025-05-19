@@ -39,7 +39,7 @@ docker run \
     -u 1000 \
     -e "VIRTUAL_HOST=$LOCUST_URL" \
     -e "VIRTUAL_PORT=8089" \
-    ghcr.io/shyim/shopware-docker/locust:latest \
+    ghcr.io/daniel-memo-ict/shopware-docker/locust:latest \
     -f  "/var/www/html/${SHOPWARE_PROJECT}/src/Core/DevOps/Locust/scenarios/${SCENARIO}-benchmark.py"\
     -H "$SHOPWARE_URL" \
     "--users=$USERS" \
