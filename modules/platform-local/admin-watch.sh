@@ -63,6 +63,7 @@ if [[ -e "${LOCAL_VITE_CONFIG}" ]]; then
       -e HOST="0.0.0.0" \
       -e ESLINT_DISABLE=true \
       -e "APP_URL=$URL" \
+      -e ADMIN_ROOT="/var/www/html/vendor/shopware/administration" \
       -e PROJECT_ROOT="/var/www/html" \
       -e ENV_FILE="/var/www/html/.env" \
       -e "VIRTUAL_HOST=$WATCHER_URL" \
