@@ -30,7 +30,7 @@ fi
   echo "services:"
 
   echo "  smtp:"
-  echo "    image: ghcr.io/daniel-memo-ict/shopware-docker/mailhog"
+  echo "    image: axllent/mailpit:latest"
   echo "    environment:"
   echo "      VIRTUAL_HOST: mail.${DEFAULT_SERVICES_DOMAIN}"
   echo "      VIRTUAL_PORT: 8025"
