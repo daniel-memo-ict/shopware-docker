@@ -53,4 +53,4 @@ bin/console system:install --create-database --basic-setup --force
 
 rm config/jwt/private.pem || true
 rm config/jwt/public.pem || true
-bin/console system:generate-jwt-secret
+bin/console system:generate-app-secret || bin/console system:generate-jwt-secret

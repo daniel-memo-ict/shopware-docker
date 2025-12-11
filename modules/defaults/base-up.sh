@@ -96,11 +96,6 @@ function create_mysql() {
   if [[ -e "$HOME/.config/swdc/mysql.conf" ]]; then
     echo "      - $HOME/.config/swdc/mysql.conf:/etc/mysql/conf.d/zz-override.cnf" >> "${DOCKER_COMPOSE_FILE}"
   fi
-
-  # TODO Change or remove this and fix support for all mysql 8.x versions
-  if [[ ${MYSQL_VERSION} == "shyim/shopware-mysql:8" || ${MYSQL_VERSION} == "ghcr.io/shyim/shopware-docker/mysql:8" || ${MYSQL_VERSION} == "mysql:8"* ]]; then
-    echo "    command: [\"mysqld\", \"--default-authentication-plugin=mysql_native_password\"]" >>"${DOCKER_COMPOSE_FILE}"
-  fi
 }
 
 function create_start_mysql() {
@@ -206,7 +201,7 @@ function create_es() {
 function create_redis() {
   {
     echo "  redis:"
-    echo "    image: redis:5-alpine"
+    echo "    image: redis:6.2-alpine"
     echo "    volumes:"
     echo "      - redis_cache:/data"
   } >>"${DOCKER_COMPOSE_FILE}"
