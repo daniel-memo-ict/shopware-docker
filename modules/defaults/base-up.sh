@@ -174,7 +174,7 @@ function create_es() {
     fi
 
     if [[ "${ELASTICSEARCH_IMAGE}" == *"opensearchproject"* ]]; then
-      echo "      plugins.security.disabled: 'true'"
+      echo "      OPENSEARCH_INITIAL_ADMIN_PASSWORD: '${OPENSEARCH_INITIAL_ADMIN_PASSWORD}'"
     fi
 
     echo "  kibana:"
@@ -191,9 +191,8 @@ function create_es() {
     fi
 
     if [[ "${ELASTICSEARCH_IMAGE}" == *"opensearchproject"* ]]; then
-      echo "      ELASTICSEARCH_URL: http://elastic:9200"
       echo "      OPENSEARCH_HOSTS: '[\"http://elastic:9200\"]'"
-      echo "      plugins.security.disabled: 'true'"
+      echo "      DISABLE_SECURITY_DASHBOARDS_PLUGIN: true"
     fi
   } >>"${DOCKER_COMPOSE_FILE}"
 }
