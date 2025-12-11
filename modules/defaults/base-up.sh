@@ -306,3 +306,72 @@ function create_varnish() {
     echo "      - ${REALDIR}/default.vcl:/etc/varnish/default.vcl"
   } >>"${DOCKER_COMPOSE_FILE}"
 }
+function create_landing() {
+  local landing_dir="${REALDIR}/swdc-landing"
+  mkdir -p "${landing_dir}"
+
+  # Build landing index.html dynamically based on known apps and tools
+  {
+    echo "<!doctype html>"
+    echo "<html><head><meta charset=\"utf-8\"><title>SWDC Landing</title>"
+    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+    echo "<style>body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:2rem;} h1{margin-top:0} ul{line-height:1.8} code{background:#f4f4f4;padding:2px 4px;border-radius:3px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px} .card{border:1px solid #eee;border-radius:8px;padding:12px} .muted{color:#666;font-size:.9em}</style>"
+    echo "</head><body>"
+    echo "<h1>Shopware Docker Landing Page</h1>"
+    echo "<p class=\"muted\">Generated at $(date -u +'%-d %b %Y %H:%M UTC').</p>"
+    echo "<h2>Projects</h2>"
+    echo "<div class=\"grid\">"
+  } >"${landing_dir}/index.html"
+
+  if [[ ${CODE_FOLDER_CONTENT} ]]; then
+    while IFS= read -r NAME; do
+      url=$(get_url "$NAME")
+      hosts=$(get_hosts "$NAME")
+      {
+        echo "  <div class=\"card\">"
+        echo "    <div><strong>${NAME}</strong></div>"
+        echo "    <div><a href=\"${url}\">${url}</a></div>"
+        echo "    <div><a href=\"${url}/admin\">${url}/admin</a></div>"
+        echo "    <div class=\"muted\">hosts: <code>${hosts}</code></div>"
+        echo "  </div>"
+      } >>"${landing_dir}/index.html"
+    done <<<"$(get_serve_folders)"
+  else
+    echo "  <div class=\"card\">No projects found in <code>${CODE_DIRECTORY}</code></div>" >>"${landing_dir}/index.html"
+  fi
+
+  {
+    echo "</div>"
+    echo "<h2>Tools</h2>"
+    echo "<ul>"
+    # Mailpit is always created by base up.sh
+    echo "  <li><a href=\"http://mail.${DEFAULT_SERVICES_DOMAIN}\">Mailpit</a></li>"
+  } >>"${landing_dir}/index.html"
+
+  if [[ ${DATABASE_TOOL} == "phpmyadmin" ]]; then
+    echo "  <li><a href=\"http://db.${DEFAULT_SERVICES_DOMAIN}\">phpMyAdmin</a></li>" >>"${landing_dir}/index.html"
+  else
+    echo "  <li><a href=\"http://db.${DEFAULT_SERVICES_DOMAIN}\">Adminer</a></li>" >>"${landing_dir}/index.html"
+  fi
+
+  if [[ ${ENABLE_ELASTICSEARCH} == "true" ]]; then
+    echo "  <li><a href=\"http://kibana.${DEFAULT_SERVICES_DOMAIN}\">Kibana</a></li>" >>"${landing_dir}/index.html"
+  fi
+  if [[ ${ENABLE_MINIO} == "true" ]]; then
+    echo "  <li><a href=\"http://s3.${DEFAULT_SERVICES_DOMAIN}:9015\">MinIO Console</a></li>" >>"${landing_dir}/index.html"
+  fi
+
+  echo "</ul>" >>"${landing_dir}/index.html"
+  echo "</body></html>" >>"${landing_dir}/index.html"
+
+  # Define minimal static server behind proxy
+  {
+    echo "  landing:"
+    echo "    image: nginx:alpine"
+    echo "    environment:"
+    echo "      VIRTUAL_HOST: ${DEFAULT_SERVICES_DOMAIN}"
+    echo "      VIRTUAL_PORT: 80"
+    echo "    volumes:"
+    echo "      - ${landing_dir}:/usr/share/nginx/html:ro"
+  } >>"${DOCKER_COMPOSE_FILE}"
+}

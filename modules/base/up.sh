@@ -49,6 +49,7 @@ create_nginx
 create_mysql
 create_start_mysql
 create_cli
+create_landing
 
 if [[ ${ENABLE_VARNISH} == "true" ]]; then
   create_varnish
@@ -96,6 +97,70 @@ fi
 
 compose run --rm start_mysql
 compose up -d --remove-orphans "${@:2}"
+
+# Optionally open the landing page in the default browser once services are ready
+if [[ "${AUTO_OPEN_LANDING}" == "true" ]]; then
+  # Build landing URL (landing served on DEFAULT_SERVICES_DOMAIN)
+  if [[ "${USE_SSL_DEFAULT}" == "true" ]]; then
+    __scheme="https"
+    __port="${HTTPS_PORT}"
+    if [[ "${HTTPS_PORT}" == "443" ]]; then
+      __port_suffix=""
+    else
+      __port_suffix=":"${HTTPS_PORT}
+    fi
+  else
+    __scheme="http"
+    __port="${HTTP_PORT}"
+    if [[ "${HTTP_PORT}" == "80" ]]; then
+      __port_suffix=""
+    else
+      __port_suffix=":"${HTTP_PORT}
+    fi
+  fi
+
+  __host="${DEFAULT_SERVICES_DOMAIN}"
+  __url="${__scheme}://${__host}${__port_suffix}"
+
+  # Wait until the landing becomes reachable (up to 120s)
+  __max_wait=120
+  __waited=0
+  while true; do
+    __code=$(curl -ks -o /dev/null -w "%{http_code}" "${__url}" || true)
+    if [[ "${__code}" =~ ^2|3 ]]; then
+      break
+    fi
+    sleep 1
+    __waited=$((__waited+1))
+    if [[ ${__waited} -ge ${__max_wait} ]]; then
+      break
+    fi
+  done
+
+  # Open URL depending on platform / environment
+  __opener=""
+  if command -v xdg-open >/dev/null 2>&1; then
+    __opener="xdg-open"
+  fi
+
+  # Detect WSL and prefer wslview/cmd.exe
+  if [[ -n "${WSL_DISTRO_NAME}" ]] || grep -qiE 'microsoft|wsl' /proc/version 2>/dev/null; then
+    if command -v wslview >/dev/null 2>&1; then
+      wslview "${__url}" >/dev/null 2>&1 &
+    else
+      cmd.exe /c start "${__url}" >/dev/null 2>&1 &
+    fi
+  elif [[ "${Platform}" == "Darwin" ]]; then
+    open "${__url}" >/dev/null 2>&1 &
+  else
+    if [[ -n "${__opener}" ]]; then
+      ${__opener} "${__url}" >/dev/null 2>&1 &
+    else
+      echo "Landing page: ${__url}" >&2
+    fi
+  fi
+fi
+
 
 if [[ $WSL_XDEBUG_TUNNEL == "true" ]]; then
   if [[ -e "$REALDIR/xdebug.sock" ]]; then
