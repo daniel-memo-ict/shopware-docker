@@ -52,6 +52,7 @@ function trim_whitespace() {
 
 function get_image() {
   folder=$1
+  code_dir=$2
   var="VHOST_${folder^^}_IMAGE"
   var="${var//-/_}"
   val=${!var}
@@ -69,7 +70,13 @@ function get_image() {
       IMAGE="ghcr.io/daniel-memo-ict/shopware-docker/5/nginx"
     fi
 
-    echo "${IMAGE}:php${PHP_VERSION}${SUFFIX}"
+    version=${PHP_VERSION}
+
+    if [[ -f ${code_dir}/.phprc ]]; then
+      version=$(cat ${code_dir}/.phprc | sed -E 's/[^0-9]*([0-9]+)\.([0-9]+).*/\1\2/')
+    fi
+
+    echo "${IMAGE}:php${version}${SUFFIX}"
   fi
 }
 
