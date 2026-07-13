@@ -17,8 +17,8 @@ while (($#)); do
   shift
 done
 
-mysql -h "$mysqlHost" -u root -proot -e "DROP DATABASE IF EXISTS \`$SHOPWARE_PROJECT\`"
-mysql -h "$mysqlHost" -u root -proot -e "CREATE DATABASE \`$SHOPWARE_PROJECT\`"
+mysql -h "$mysqlHost" -u root -proot --skip-ssl --ssl --ssl-verify-server-cert=0 -e "DROP DATABASE IF EXISTS \`$SHOPWARE_PROJECT\`"
+mysql -h "$mysqlHost" -u root -proot --skip-ssl --ssl --ssl-verify-server-cert=0 -e "CREATE DATABASE \`$SHOPWARE_PROJECT\`"
 cd "${SHOPWARE_FOLDER}" || exit 1
 URL=$(get_url "$SHOPWARE_PROJECT")
 SECRET=$(openssl rand -hex 32)
