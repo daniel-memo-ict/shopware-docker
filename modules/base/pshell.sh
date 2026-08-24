@@ -11,9 +11,14 @@ PROJECT_NAME=$1
 shift
 
 PHP_VERSION=default
+SUFFIX=""
 
 if [ -f "${CODE_DIRECTORY}/${PROJECT_NAME}/.phprc" ]; then
   PHP_VERSION=$(cat ${CODE_DIRECTORY}/${PROJECT_NAME}/.phprc | sed -E 's/[^0-9]*([0-9]+)\.([0-9]+).*/\1\2/')
+fi
+
+if [[ $XDEBUG_ENABLE == "xdebug" ]]; then
+  SUFFIX="-xdebug"
 fi
 
 if [ -n "$1" ]; then
@@ -22,6 +27,9 @@ if [ -n "$1" ]; then
     --php-version)
       shift
       PHP_VERSION=$1
+      ;;
+    --xdebug)
+      SUFFIX="-xdebug"
       ;;
     *)
       break
@@ -50,5 +58,5 @@ else
     -v shopware-docker_nvm_cache:/nvm \
     -v "$CODE_DIRECTORY:/var/www/html/" \
     -v "/.config/swdc/:/swdc-cfg" \
-    "ghcr.io/daniel-memo-ict/shopware-docker/cli:php$PHP_VERSION" "$@"
+    "ghcr.io/daniel-memo-ict/shopware-docker/cli:php$PHP_VERSION$SUFFIX" "$@"
 fi
