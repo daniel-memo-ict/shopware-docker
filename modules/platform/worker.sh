@@ -2,12 +2,17 @@
 
 cd "${SHOPWARE_FOLDER}" || exit 1
 
-TRAP_PIDS="/tmp/${SHOPWARE_PROJECT}-worker.pid"
 WORKER_AMOUNT="$3"
+WORKER_TRANSPORT="$4"
 
 if [[ -z "$WORKER_AMOUNT" ]]; then
   WORKER_AMOUNT=1;
 fi
+if [[ -z "$WORKER_TRANSPORT" ]]; then
+  WORKER_TRANSPORT="async";
+fi
+
+TRAP_PIDS="/tmp/${SHOPWARE_PROJECT}-${WORKER_TRANSPORT}-worker.pid"
 
 function cancel_trap()
 {
@@ -24,9 +29,9 @@ function cancel_trap()
 trap cancel_trap SIGINT
 
 for i in $(seq 1 "${WORKER_AMOUNT}"); do
-  bash -c "while true; do php bin/console messenger:consume --memory-limit=1G -vvv; done"  > "var/log/worker-$i.log" 2>&1 & echo $! > "${TRAP_PIDS}.$i"
+  bash -c "while true; do php bin/console messenger:consume ${WORKER_TRANSPORT} --memory-limit=1G -vvv; done"  > "var/log/worker-${WORKER_TRANSPORT}-$i.log" 2>&1 & echo $! > "${TRAP_PIDS}.$i"
 done
 
-echo "Started ${WORKER_AMOUNT} Worker in Background. Press STRG+C to cancel them. Use swdc worker-logs to see logs"
+echo "Started ${WORKER_AMOUNT} worker(s) for the \"${WORKER_TRANSPORT}\" transport in the background. Press CTRL+C to cancel them. Use swdc worker-logs to see logs"
 
 wait
